@@ -7,6 +7,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Added new `git-commit-from-instructions` overlay skill with `staged-only` and `agent-only` modes.
+- Added language-specific commit instruction references:
+  - `skills/git-commit-from-instructions/references/git-commit-instructions.ko.md`
+  - `skills/git-commit-from-instructions/references/git-commit-instructions.md`
+
 ### Changed
 
 - Shifted distribution model to official `npx skills add beerjoa/skills` usage.

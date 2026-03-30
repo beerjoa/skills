@@ -95,6 +95,7 @@ No install command is provided yet.
 - `implementation-summary`: implementation handoff summary overlay
 - `repo-readme`: practical README structure and quality overlay
 - `requirement-gap-check`: requirement coverage and gap scan overlay
+- `git-commit-from-instructions`: staged-only/agent-only commit overlay with language-specific commit instructions
 
 ## Skill Contract
 

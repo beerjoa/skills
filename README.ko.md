@@ -95,6 +95,7 @@ npx skills add beerjoa/skills \
 - `implementation-summary`: 구현 결과 handoff 요약 오버레이
 - `repo-readme`: 실용적인 README 구조/품질 오버레이
 - `requirement-gap-check`: 요구사항 충족/누락 점검 오버레이
+- `git-commit-from-instructions`: staged-only/agent-only 모드와 언어별 instruction을 적용한 커밋 오버레이
 
 ## Skill Contract
 
