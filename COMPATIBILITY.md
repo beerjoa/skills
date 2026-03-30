@@ -59,9 +59,3 @@ npx skills add beerjoa/skills --list
 ```bash
 npx skills add beerjoa/skills --skill pr-self-review -a codex
 ```
-
-## 한국어 요약
-
-- 공식 호환 기준은 `skills` CLI (`npx skills add`)입니다.
-- 스킬 인식 기본 조건은 `skills/<id>/SKILL.md` + frontmatter(`name`,`description`)입니다.
-- 에이전트별 차이가 있어도 `SKILL.md`만으로 기본 사용이 가능해야 합니다.

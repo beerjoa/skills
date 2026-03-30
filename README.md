@@ -1,5 +1,7 @@
 # beerjoa/skills
 
+[English](./README.md) | [한국어](./README.ko.md)
+
 A lightweight personal overlay pack distributed through `npx skills add`.
 
 This repository is designed for direct installation with the official `skills` CLI:
@@ -10,6 +12,8 @@ npx skills add beerjoa/skills
 
 It augments host agent workflows with policy/context/checklist/output-format overlays.
 It does not replace planning, coding, review, or execution loops of your host agent tooling.
+
+> Canonical document: `README.md` (English)
 
 ## Quick Start
 
@@ -100,6 +104,12 @@ For compatibility with `npx skills add`, each skill follows:
 - Frontmatter required: `name`, `description`
 - Convention: frontmatter `name` matches `<skill-id>`
 
+## Language Policy
+
+- `README.md` is the base document.
+- `README.ko.md` is the Korean translation document.
+- If there is any mismatch, `README.md` takes precedence.
+
 ## What This Repository Is Not
 
 - Not a framework
@@ -129,13 +139,7 @@ Use manual copy only when `npx skills add` is unavailable in your environment.
 
 ## Related Docs
 
+- [README (Korean)](./README.ko.md)
 - [INTEROP.md](./INTEROP.md)
 - [COMPATIBILITY.md](./COMPATIBILITY.md)
 - [CHANGELOG.md](./CHANGELOG.md)
-
-## 한국어 요약
-
-- 이 저장소의 공식 배포 방식은 `npx skills add beerjoa/skills`입니다.
-- `core`/`review` 프로필은 README의 `--skill` 조합 명령으로 설치합니다.
-- `career` 프로필은 아직 placeholder입니다.
-- 수동 복사는 문제 해결용 보조 경로이며 기본 방식이 아닙니다.

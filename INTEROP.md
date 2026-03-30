@@ -47,9 +47,3 @@ Before publishing updates:
 - Does the wording preserve host workflow ownership?
 - Are support files optional reinforcement, not hard requirements?
 - Is "adapt, do not replace" preserved in practical guidance?
-
-## 한국어 요약
-
-- 설치는 `npx skills add beerjoa/skills`를 기본으로 사용합니다.
-- 이 저장소는 워크플로우를 대체하지 않고 보강만 합니다.
-- 기존 산출물이 있으면 새로 만들기보다 보완(adapt)하는 원칙을 유지합니다.
