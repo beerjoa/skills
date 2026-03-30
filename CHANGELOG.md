@@ -7,13 +7,6 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
-### Added
-
-- Added new `git-commit-from-instructions` overlay skill with `staged-only` and `agent-only` modes.
-- Added language-specific commit instruction references:
-  - `skills/git-commit-from-instructions/references/git-commit-instructions.ko.md`
-  - `skills/git-commit-from-instructions/references/git-commit-instructions.md`
-
 ### Changed
 
 - Shifted distribution model to official `npx skills add beerjoa/skills` usage.
@@ -21,6 +14,15 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Moved manual copy guidance to troubleshooting-only fallback.
 - Split README into English base (`README.md`) and Korean translation (`README.ko.md`).
 - Removed Korean summary sections from non-README root docs for English-only base docs.
+
+## [0.1.1] - 2026-03-30
+
+### Added
+
+- Added new `git-commit-from-instructions` overlay skill with `staged-only` and `agent-only` modes.
+- Added language-specific commit instruction references:
+  - `skills/git-commit-from-instructions/references/git-commit-instructions.ko.md`
+  - `skills/git-commit-from-instructions/references/git-commit-instructions.md`
 
 ## [0.1.0] - 2026-03-30
 
