@@ -4,139 +4,37 @@
 
 `npx skills add`를 통해 배포되는 가벼운 개인 오버레이 스킬 팩입니다.
 
-이 저장소는 공식 `skills` CLI로 바로 설치하도록 설계되었습니다.
-
-```bash
-npx skills add beerjoa/skills
-```
-
 이 스킬들은 호스트 에이전트 워크플로우 위에 policy/context/checklist/output-format 오버레이를 제공합니다.
 호스트의 planning, coding, review, execution 루프를 대체하지 않습니다.
 
 > 기준 문서: `README.md` (영문)
 
-## Quick Start
+## 설치
 
-### 1) 사용 가능한 스킬 목록 확인
-
-```bash
-npx skills add beerjoa/skills --list
-```
-
-### 2) 전체 스킬 설치
+### npx skills add 사용
 
 ```bash
 npx skills add beerjoa/skills
 ```
 
-### 3) 특정 스킬 1개 설치
+CLI 상세 사용법은 [vercel-labs/skills](https://github.com/vercel-labs/skills)를 참고하세요.
 
-```bash
-npx skills add beerjoa/skills --skill pr-self-review
-```
+### 수동 설치
 
-### 4) 특정 agent 대상으로 설치
+1. `skills/<skill-id>/`를 에이전트 skills 디렉터리로 복사합니다.
+2. `SKILL.md` frontmatter를 유지합니다.
+3. 에이전트를 재시작하여 스킬을 재로딩합니다.
 
-```bash
-npx skills add beerjoa/skills --skill pr-self-review -a codex
-```
+## 스킬 목록
 
-### 5) 전역 설치
-
-```bash
-npx skills add beerjoa/skills --skill pr-self-review -a codex -g
-```
-
-## Profile Installs
-
-`profiles/*.txt` 파일이 스킬 묶음의 source of truth입니다.
-
-### Core profile (`profiles/core.txt`)
-
-포함 스킬:
-- `pr-self-review`
-- `change-risk-check`
-- `implementation-summary`
-
-설치 명령:
-
-```bash
-npx skills add beerjoa/skills \
-  --skill pr-self-review \
-  --skill change-risk-check \
-  --skill implementation-summary
-```
-
-### Review profile (`profiles/review.txt`)
-
-포함 스킬:
-- `pr-self-review`
-- `change-risk-check`
-- `requirement-gap-check`
-
-설치 명령:
-
-```bash
-npx skills add beerjoa/skills \
-  --skill pr-self-review \
-  --skill change-risk-check \
-  --skill requirement-gap-check
-```
-
-### Career profile (`profiles/career.txt`)
-
-현재는 향후 스킬을 위한 placeholder profile입니다.
-아직 설치 명령은 제공하지 않습니다.
-
-## Skill Catalog
-
-- `pr-self-review`: PR 전 셀프 점검 및 PR 본문 정리 오버레이
-- `change-risk-check`: 변경 리스크 분류 및 완화 관점 오버레이
-- `implementation-summary`: 구현 결과 handoff 요약 오버레이
-- `repo-readme`: 실용적인 README 구조/품질 오버레이
-- `requirement-gap-check`: 요구사항 충족/누락 점검 오버레이
-- `git-commit-from-instructions`: staged-only/agent-only 모드와 언어별 instruction을 적용한 커밋 오버레이
-
-## Skill Contract
-
-`npx skills add` 호환을 위해 각 스킬은 다음 규칙을 따릅니다.
-
-- 경로: `skills/<skill-id>/SKILL.md`
-- frontmatter 필수 필드: `name`, `description`
-- 규칙: frontmatter의 `name`은 `<skill-id>`와 일치
-
-## Language Policy
-
-- `README.md`가 기준 문서입니다.
-- `README.ko.md`는 한국어 번역 문서입니다.
-- 내용 불일치 시 `README.md`를 우선합니다.
-
-## What This Repository Is Not
-
-- 프레임워크가 아님
-- 플러그인 플랫폼이 아님
-- 워크플로우 오케스트레이터가 아님
-- build/test 루프 제어기가 아님
-
-## Troubleshooting
-
-### `npx skills add`로 스킬을 찾지 못할 때
-
-다음 명령으로 확인하세요.
-
-```bash
-npx skills add beerjoa/skills --list
-```
-
-실패하면 저장소 공개 상태, 브랜치 상태, 네트워크를 점검하세요.
-
-### 수동 복사 fallback (최후 수단)
-
-현재 환경에서 `npx skills add`를 쓸 수 없을 때만 수동 복사를 사용하세요.
-
-1. `skills/<skill-id>/`를 에이전트 skills 디렉터리로 복사
-2. `SKILL.md` frontmatter 유지
-3. 에이전트를 재시작하여 스킬 재로딩
+| 스킬 | 설명 |
+|------|------|
+| `pr-self-review` | PR을 열거나 업데이트하기 전에 변경 범위를 검토하고, 미해결 리스크를 표시하며, 깔끔한 PR 본문을 작성합니다. |
+| `change-risk-check` | 머지 또는 릴리스 전에 변경 리스크 수준을 분류하고, 잠재적 장애 원인을 식별하며, 완화 방안을 제시합니다. |
+| `implementation-summary` | 변경 완료 후 무엇을 구현했고, 무엇을 검증했으며, 어떤 후속 작업이 남았는지를 구체적으로 요약합니다. |
+| `repo-readme` | 실용적인 온보딩을 위해 README 구조와 명확성을 개선합니다. 명령 예시는 정확하게 유지하고 추상적인 내용은 제거합니다. |
+| `requirement-gap-check` | 각 요구사항을 구현 근거와 매핑하고, 리뷰 또는 handoff 전에 미충족되거나 모호한 항목을 표면화합니다. |
+| `git-commit-from-instructions` | 저장소별 커밋 규칙에 따라 커밋 메시지를 생성하고, staged 또는 에이전트가 작성한 변경사항만 커밋합니다. |
 
 ## Related Docs
 
