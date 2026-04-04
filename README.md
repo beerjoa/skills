@@ -1,6 +1,6 @@
 # beerjoa/skills
 
-[English](./README.md) | [한국어](./README.ko.md)
+English | [한국어](./README.ko.md)
 
 A lightweight personal overlay pack distributed through `npx skills add`.
 

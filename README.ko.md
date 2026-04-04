@@ -1,6 +1,6 @@
 # beerjoa/skills
 
-[English](./README.md) | [한국어](./README.ko.md)
+[English](./README.md) | 한국어
 
 `npx skills add`를 통해 배포되는 가벼운 개인 오버레이 스킬 팩입니다.
 
