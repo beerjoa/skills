@@ -3,9 +3,9 @@
 ## Target
 
 - role: developer
-- repository or service:
-- author or scope:
-- commit range or filters:
+- repository:
+- author:
+- commit range:
 
 ## Bullet Summary
 
