@@ -1,3 +1,4 @@
-# Future placeholders
+# Future entries
 # career-jd-analysis
 # career-resume-tailor
+extract-project-contributions
