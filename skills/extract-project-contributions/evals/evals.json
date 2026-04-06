@@ -1,0 +1,23 @@
+{
+  "skill_name": "extract-project-contributions",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use $extract-project-contributions in developer mode for /Users/Jay/Documents/Dev/git/beerjoa/resume-builder-llm. Filter to recent commits by Jay and extract grounded project contribution data only.",
+      "expected_output": "Creates developer-mode structured evidence at experience_output.md, keeps git-grounded traceability, and excludes weak housekeeping commits.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Use $extract-project-contributions in planner mode on the folder I provide that contains a PRD, weekly sync notes, and prioritization docs. Extract only the work I directly did, keep file-based locators, and do not rewrite anything into resume bullets.",
+      "expected_output": "Creates non-developer structured evidence at experience_output_nondeveloper.md with Evidence Source and Locator on every main row.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Use $extract-project-contributions in designer mode on the folder I provide that contains slide decks, PDFs, and markdown design notes. Extract only grounded design contribution data and keep source-plus-locator traceability explicit.",
+      "expected_output": "Creates non-developer structured evidence at experience_output_nondeveloper.md using designer-appropriate contribution types only when explicitly supported.",
+      "files": []
+    }
+  ]
+}
