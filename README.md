@@ -34,6 +34,7 @@ For detailed CLI usage, see [vercel-labs/skills](https://github.com/vercel-labs/
 | `implementation-summary` | Produces a concrete handoff summary of what was built, verified, and left as follow-up after completing a change. |
 | `repo-readme` | Improves README structure and clarity for practical onboarding — keeps command examples accurate and removes abstract filler. |
 | `requirement-gap-check` | Maps each requirement to implementation evidence and surfaces unmet or ambiguous items before review or handoff. |
+| `extract-project-contributions` | Extracts source-grounded project contribution evidence from repositories or document artifacts for career workflows before any rewriting step. |
 | `git-commit-from-instructions` | Generates a compliant commit message from repository-specific instructions and commits only staged or agent-authored changes. |
 
 ## Related Docs
