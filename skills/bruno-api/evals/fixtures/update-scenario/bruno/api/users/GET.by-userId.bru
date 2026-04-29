@@ -1,0 +1,16 @@
+meta {
+  name: GET /users/:userId
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/users/{{userId}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+}

@@ -1,0 +1,16 @@
+meta {
+  name: DELETE /users/:userId
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/users/{{userId}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+}

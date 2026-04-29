@@ -1,0 +1,58 @@
+{
+  "skill_name": "bruno-api",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I've got a NestJS project at skills/bruno-api/evals/fixtures/basic-crud with a products API. Can you create a Bruno collection for it so I can test the endpoints in different environments?",
+      "expected_output": "A bruno/ directory with collection metadata, environment file(s), and one .bru file per product endpoint (create, list, get-by-id, update, delete), including appropriate response assertions.",
+      "files": ["evals/fixtures/basic-crud"],
+      "expectations": [
+        "Creates bruno/bruno.json with collection metadata and correct project name",
+        "Creates at least one environment file in bruno/environments/ with base_url variable",
+        "Creates bruno/api/products/POST.create.bru for POST /api/products",
+        "Creates a Bruno file for GET /api/products endpoint (GET.findAll.bru or similar)",
+        "Creates a Bruno file for GET /api/products/:id endpoint (GET.findOne.bru or similar)",
+        "Creates a Bruno file for PATCH /api/products/:id endpoint (PATCH.update.bru or similar)",
+        "Creates a Bruno file for DELETE /api/products/:id endpoint (DELETE.remove.bru or similar)",
+        "The POST endpoint script assert checks for status 201",
+        "The DELETE endpoint script assert checks for status 204",
+        "Base URL reflects global prefix 'api' (http://localhost:3000/api)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need Bruno collections for my NestJS project at skills/bruno-api/evals/fixtures/auth-crud. It's a NestJS app with JWT authentication. Generate a complete Bruno collection including auth flow so I can test the protected endpoints.",
+      "expected_output": "A bruno/ directory with collection metadata, environment files, auth module endpoints, users module endpoints, orders module endpoints, a core auth-token request, and inferred smoke flow tests.",
+      "files": ["evals/fixtures/auth-crud"],
+      "expectations": [
+        "Creates bruno/core/POST.auth-token.bru for acquiring JWT token via /auth/login",
+        "The auth-token script uses bru.setVar to store the access token",
+        "Creates bruno/api/auth/POST.register.bru for POST /auth/register",
+        "Creates bruno/api/auth/POST.login.bru for POST /auth/login",
+        "Creates bruno/api/auth/GET.me.bru for GET /auth/me",
+        "Creates a Bruno file for GET /users endpoint (GET.findAll.bru or similar)",
+        "Creates a Bruno file for DELETE /users/:id endpoint (DELETE.remove.bru or similar)",
+        "Creates bruno/api/orders/POST.create.bru for POST /orders",
+        "Protected endpoints include Authorization header with Bearer {{auth_token}}",
+        "Creates at least one smoke flow in bruno/smoke/ folder",
+        "Detects NestJS framework from package.json"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I updated my NestJS API at skills/bruno-api/evals/fixtures/update-scenario. I added some new endpoints, removed the delete user endpoint, and changed the GET user path from :userId to :id. Can you update the Bruno collection that's already there?",
+      "expected_output": "Existing bruno/ collection is updated: new endpoints are added, the stale DELETE endpoint is flagged but not deleted without confirmation, the GET user endpoint path is updated, and untouched endpoints remain as-is.",
+      "files": ["evals/fixtures/update-scenario"],
+      "expectations": [
+        "Detects that bruno/ already exists and operates in update mode",
+        "Creates bruno/api/auth/POST.logout.bru for the new POST /auth/logout endpoint",
+        "Creates bruno/api/users/GET.search.bru for the new GET /users/search endpoint",
+        "Creates bruno/api/users/POST.create.bru for the new POST /users endpoint",
+        "Updates the GET users by-id endpoint path from :userId to :id",
+        "Identifies DELETE /users/:userId as stale/removed and asks user before deleting",
+        "Preserves the unchanged GET /users endpoint file",
+        "Does NOT modify the unchanged bruno.json or environment files unnecessarily"
+      ]
+    }
+  ]
+}
