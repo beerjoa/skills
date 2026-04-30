@@ -1,6 +1,8 @@
 # Framework Adapters
 
-This reference defines the `FrameworkAdapter` interface and all available implementations. Read this during the **Explore** phase to determine which adapter matches the target project and how to extract routes.
+This reference defines the `FrameworkAdapter` interface and adapter strategies. Read this during the **Explore** phase to determine which adapter matches the target project and how to extract routes.
+
+The adapter model is framework-agnostic. Framework-specific logic should be isolated to each adapter section instead of leaking into shared phases.
 
 ---
 
@@ -27,6 +29,7 @@ interface Route {
   module: string              // e.g. users, auth
   handlerName: string         // e.g. findAll, createUser
   authRequired: boolean       // Does this route require authentication?
+  statusCodeHint?: number     // e.g. 201 from @HttpCode / @ResponseStatus
   requestBody?: {             // For POST/PUT/PATCH
     fields: { name: string; type: string; required: boolean }[]
   }
@@ -84,8 +87,12 @@ interface EnvHint {
      - `@Body()` → request body exists
    - Determine auth requirement:
      - Check for `@UseGuards()` decorator at method or class level
+     - Check for global guards (`APP_GUARD` in module providers)
      - Check for custom auth guards (class extends `AuthGuard` or `AuthGuard('jwt')`)
      - Check for common NestJS auth patterns like `@Public()` decorator (negation of auth)
+   - Determine status code hint:
+     - Prefer explicit `@HttpCode(<code>)`
+     - Else use NestJS defaults (GET/PUT/PATCH 200, POST 201, DELETE 200 unless overridden)
    - The file name priority: Swagger `operationId` (from `@ApiOperation({ operationId: '...' })`) → method name
    - The handler name is the method name (fallback)
 
@@ -117,18 +124,67 @@ interface EnvHint {
 - Controllers are typically in `src/<module>/<module>.controller.ts`
 - Common prefix: Check main.ts for `app.setGlobalPrefix()` to detect global prefix (e.g., `api`, `api/v1`)
 
-### Placeholder: Spring Boot
+### Spring Boot
 
-Implementation guide (not yet implemented):
-- Detection: `build.gradle`/`pom.xml` with `spring-boot-starter-web`
-- Route extraction: scan `@RestController` classes, `@GetMapping`/`@PostMapping`/etc. annotations
-- Auth detection: `Spring Security`, `@PreAuthorize`, JWT filter patterns
-- Source root: `src/main/java/`
+Adapter strategy:
+- Detection:
+  - `build.gradle`/`build.gradle.kts` or `pom.xml` exists
+  - Dependency includes `spring-boot-starter-web`
+- Route extraction:
+  - Scan `src/main/java/**/*Controller.java`
+  - Read class-level `@RequestMapping` base path
+  - Read method-level mappings (`@GetMapping`, `@PostMapping`, `@PutMapping`, `@PatchMapping`, `@DeleteMapping`, `@RequestMapping(method=...)`)
+  - Combine class path + method path into normalized route path
+  - Derive module from package segment or controller file directory
+- Auth detection:
+  - Check for Spring Security usage (`SecurityFilterChain`, `WebSecurityConfigurerAdapter`, `@EnableWebSecurity`)
+  - Check method/class guards (`@PreAuthorize`, `@Secured`, `@RolesAllowed`)
+  - Infer JWT/api-key style from filter/interceptor patterns
+- Status code hint:
+  - Prefer explicit `@ResponseStatus`
+  - Else framework defaults (GET/PUT/PATCH 200, POST 200/201 depending on implementation, DELETE 200/204)
+- Environment hints:
+  - Read `application.yml`, `application-*.yml`, `application.properties`, `.env*`
+  - Detect `server.port` and `server.servlet.context-path` for base URL hints
 
-### Placeholder: FastAPI
+### FastAPI
 
-Implementation guide (not yet implemented):
-- Detection: `fastapi` in requirements or pyproject.toml
-- Route extraction: scan `APIRouter` instances, `@router.get()`/`@router.post()` decorators
-- Auth detection: `OAuth2PasswordBearer`, JWT middleware patterns
-- Source root: typically project root or `app/` directory
+Adapter strategy:
+- Detection:
+  - `requirements.txt`/`pyproject.toml` contains `fastapi`
+  - Common app entry files include `main.py`, `app/main.py`, or files importing `FastAPI`
+- Route extraction:
+  - Scan for `APIRouter()` definitions and `@router.get/post/put/patch/delete(...)`
+  - Scan `app = FastAPI(...)` routes and `include_router(..., prefix=...)` wiring
+  - Compose normalized paths from router prefix + decorator path
+  - Derive module from router variable/file path (`users_router` -> `users`)
+- Auth detection:
+  - Check `OAuth2PasswordBearer`, `HTTPBearer`, dependency-injected auth guards, JWT utility modules
+  - Mark routes protected when auth dependencies appear in route decorator dependencies or endpoint signature
+- Status code hint:
+  - Prefer explicit `status_code=` in route decorator
+  - Else FastAPI defaults (GET/PUT/PATCH 200, POST 200, DELETE 200)
+- Environment hints:
+  - Read `.env`, `.env.example`, settings modules (`BaseSettings`), and uvicorn run config
+  - Detect host/port defaults (typically `127.0.0.1:8000`) and optional root path
+
+## Cross-Adapter Normalization Rules
+
+- Normalize every route to `/<segment>` form and path params to `:param` style.
+- Build a stable identity key per route: `<METHOD> <normalized-path>`.
+- Use explicit status code hints from source when present; only fall back to framework defaults when absent.
+- Keep module mapping deterministic so update mode can preserve unchanged files.
+
+## Cross-Adapter File Naming Rules
+
+- Generate endpoint file names as `<METHOD>.<name>.bru` where `<name>` is deterministic kebab-case.
+- Naming priority:
+  1. Adapter-provided operation identifier (`operationId` or equivalent)
+  2. Semantic derivation from method + normalized path
+- Semantic defaults:
+  - `GET /resources` -> `list-resources`
+  - `GET /resources/:id` -> `resource-by-id`
+  - `POST /resources` -> `create-resource`
+  - `PUT|PATCH /resources/:id` -> `update-resource`
+  - `DELETE /resources/:id` -> `delete-resource`
+- If two routes in the same module still collide after normalization, append a stable suffix from the terminal static segment.
