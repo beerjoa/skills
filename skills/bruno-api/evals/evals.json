@@ -8,6 +8,7 @@
       "files": ["evals/fixtures/basic-crud"],
       "expectations": [
         "Creates bruno/bruno.json with collection metadata and correct project name",
+        "Creates bruno/collection.bru with collection-level settings and a non-empty docs block",
         "Creates at least one environment file in bruno/environments/ with base_url variable",
         "Creates bruno/api/products/POST.create-product.bru for POST /api/products (or equivalent kebab-case semantic name)",
         "Creates a Bruno file for GET /api/products endpoint using kebab-case semantic naming",
@@ -16,7 +17,8 @@
         "Creates a Bruno file for DELETE /api/products/:id endpoint using kebab-case semantic naming",
         "The POST endpoint script assert checks for status 201",
         "The DELETE endpoint script assert follows explicit source status when present (204 in this fixture)",
-        "Base URL reflects global prefix 'api' (http://localhost:3000/api)"
+        "Base URL reflects global prefix 'api' (http://localhost:3000/api)",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
       ]
     },
     {
@@ -25,6 +27,7 @@
       "expected_output": "A bruno/ directory with collection metadata, environment files, auth module endpoints, users module endpoints, orders module endpoints, a core auth-token request, and inferred smoke flow tests.",
       "files": ["evals/fixtures/auth-crud"],
       "expectations": [
+        "Creates bruno/collection.bru with collection-level settings and a non-empty docs block",
         "Creates bruno/core/POST.auth-token.bru for acquiring JWT token via /auth/login",
         "The auth-token script uses bru.setVar to store token using inferred token field",
         "Creates bruno/api/auth/POST.register-user.bru for POST /auth/register (or equivalent kebab-case semantic name)",
@@ -35,7 +38,8 @@
         "Creates bruno/api/orders/POST.create-order.bru for POST /orders (or equivalent kebab-case semantic name)",
         "Protected endpoints include Authorization header with Bearer {{auth_token}}",
         "Creates at least one smoke flow in bruno/smoke/ folder",
-        "Detects NestJS framework from package.json"
+        "Detects NestJS framework from package.json",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
       ]
     },
     {
@@ -51,8 +55,9 @@
         "Updates the GET users by-id endpoint path from :userId to :id",
         "Identifies DELETE /users/:userId as stale/removed and asks user before deleting",
         "Preserves the unchanged GET /users endpoint file",
-        "Does NOT modify the unchanged bruno.json or environment files unnecessarily",
-        "Uses route identity based on method + normalized path to decide new/changed/stale routes"
+        "Does NOT modify the unchanged bruno.json, collection.bru, or environment files unnecessarily",
+        "Uses route identity based on method + normalized path to decide new/changed/stale routes",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
       ]
     },
     {
@@ -62,6 +67,7 @@
       "files": ["evals/fixtures/spring-basic"],
       "expectations": [
         "Detects Spring Boot using build.gradle and spring-boot-starter-web",
+        "Creates bruno/collection.bru with collection-level settings and a non-empty docs block",
         "Creates bruno/api/products/GET.list-products.bru",
         "Creates bruno/api/products/GET.product-by-id.bru",
         "Creates bruno/api/products/POST.create-product.bru",
@@ -69,7 +75,8 @@
         "Creates bruno/environments/local.bru and bruno/environments/staging.bru",
         "Local base_url reflects Spring defaults and context path (http://localhost:8080/api)",
         "POST assert uses explicit source status (201 from @ResponseStatus)",
-        "DELETE assert uses explicit source status (204 from @ResponseStatus)"
+        "DELETE assert uses explicit source status (204 from @ResponseStatus)",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
       ]
     },
     {
@@ -79,6 +86,7 @@
       "files": ["evals/fixtures/fastapi-basic"],
       "expectations": [
         "Detects FastAPI using requirements.txt/pyproject signals",
+        "Creates bruno/collection.bru with collection-level settings and a non-empty docs block",
         "Creates bruno/api/products/GET.list-products.bru",
         "Creates bruno/api/products/GET.product-by-id.bru",
         "Creates bruno/api/products/POST.create-product.bru",
@@ -86,7 +94,8 @@
         "Creates bruno/smoke/smoke.products-crud-lite.bru",
         "Generated URLs/base_url reflect the /api router prefix",
         "POST assert uses explicit source status (201 from status_code)",
-        "DELETE assert uses explicit source status (204 from status_code)"
+        "DELETE assert uses explicit source status (204 from status_code)",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
       ]
     },
     {

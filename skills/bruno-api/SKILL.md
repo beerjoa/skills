@@ -33,6 +33,7 @@ This is complementary to project-internal e2e tests. Bruno collections validate 
 
 - A `bruno/` directory under the project root containing:
   - `bruno.json` — collection metadata
+  - `collection.bru` — collection-level settings, shared auth/headers, and docs
   - `environments/<env>.bru` — per-environment variables
   - `api/<module>/<METHOD>.<name>.bru` — one request per endpoint
   - `core/POST.auth-token.bru` — auth token acquisition (if auth detected)
@@ -79,7 +80,7 @@ Read the project environment to understand what you're working with:
 
 5. **Extract env hints.** Run `getEnvHints()` to identify environment variables relevant to the Bruno collection (base URL patterns, ports, etc.).
 
-6. **Check for existing Bruno.** Look for `bruno/` directory in the project root. If found, read `bruno.json` and existing `.bru` files to understand current state.
+6. **Check for existing Bruno.** Look for `bruno/` directory in the project root. If found, read `bruno.json`, `collection.bru`, and existing `.bru` files to understand current state.
 
 7. **Check for OpenAPI docs.** If `openapi.yaml`, `swagger.json`, etc. exist, read them for response structure hints (optional enrichment).
 
@@ -150,7 +151,33 @@ Generate all Bruno collection files:
 }
 ```
 
-2. **`bruno/environments/<env>.bru`**
+2. **`bruno/collection.bru`**
+
+Use this file for collection-level settings that should not be duplicated across every request:
+- shared `headers` (for example `Content-Type`)
+- collection-level `auth` defaults where inheritance is appropriate
+- shared collection docs
+
+Example:
+```
+auth {
+  mode: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+docs {
+  # <project-name> API
+
+  Generated for environment-level API validation from backend source code.
+}
+```
+
+If protected endpoints should inherit shared auth configuration, keep request files on `auth: inherit` and define the shared default here. If an endpoint must bypass shared auth (for example login), set `auth: none` explicitly in that request file.
+
+3. **`bruno/environments/<env>.bru`**
 
 Each environment file follows this structure:
 ```
@@ -163,9 +190,9 @@ vars:local {
 }
 ```
 
-Common variables shared by all environments can also be defined at collection level in `bruno.json` when that reduces duplication.
+Common values shared across the collection can live in `collection.bru` when that reduces duplication. Keep `bruno.json` focused on collection metadata/configuration.
 
-3. **`bruno/api/<module>/<METHOD>.<name>.bru`**
+4. **`bruno/api/<module>/<METHOD>.<name>.bru`**
 
 File naming rule: `<name>` is deterministic kebab-case and framework-agnostic.
 
@@ -180,9 +207,9 @@ Naming algorithm (in order):
 3. If naming collisions remain within the same module, append a stable suffix from the terminal static path segment.
 
 Each endpoint file contains:
-- Request URL, method, headers
+- Request URL and method
 - Body (for POST/PUT/PATCH)
-- Auth header using `{{auth_token}}`
+- Per-request auth/header overrides only when they should not inherit from `collection.bru`
 - Script → Assert block with status + structure validation
 
 Example:
@@ -218,7 +245,7 @@ script:post-response {
 }
 ```
 
-4. **`bruno/core/POST.auth-token.bru`** (if auth detected)
+5. **`bruno/core/POST.auth-token.bru`** (if auth detected)
 
 Captures token and sets as collection variable for subsequent requests:
 ```
@@ -230,11 +257,11 @@ script:post-response {
 }
 ```
 
-5. **`bruno/core/GET.health.bru`**
+6. **`bruno/core/GET.health.bru`**
 
 Simple health check endpoint if detected.
 
-6. **`bruno/smoke/smoke.<flow>.bru`**
+7. **`bruno/smoke/smoke.<flow>.bru`**
 
 Multi-request flow files. Use Bruno's request chaining (Post-Response scripts set variables consumed by the next request):
 ```
@@ -244,14 +271,33 @@ script:post-response {
 }
 ```
 
-7. **Update mode.** If `bruno/` already exists:
+8. **Validate generated Bruno artifacts.** Run this validation before considering the collection complete:
+   - If Bruno publishes an official public schema for `bruno.json`, validate the generated file against it.
+   - If no official public `bruno.json` schema is available, do a lightweight consistency check instead:
+     - `bruno.json` exists and parses as JSON
+     - `bruno.json` contains `name` and `type: "collection"`
+     - `collection.bru` exists
+     - `collection.bru` contains a non-empty `docs {}` block with no placeholder text like `TODO` or `TBD`
+     - at least one environment file exists under `environments/`
+     - representative request files contain `meta` plus an HTTP block (`get`, `post`, `put`, `patch`, or `delete`)
+     - representative request files include either explicit auth or intentional inheritance plus at least one validation block (`tests` or `script:post-response`)
+
+9. **Update mode.** If `bruno/` already exists:
    - Compare current route map against existing `.bru` files using route identity key (`<METHOD> <normalized-path>`)
    - **New routes** → create new `.bru` files
-   - **Removed routes** → list as stale, ask user before deleting
-   - **Changed routes** (path/method/signature changed) → update existing `.bru` files
-   - **Rename policy:**
-     - If route identity is unchanged, keep the existing file path/name to avoid churn.
-     - If route identity changed, generate a new file path via naming algorithm and mark the old file as stale.
+   - **Removed routes** → **Do NOT delete.** Preserve in place, mark as stale, write a note. Ask user before deleting.
+   - **Changed routes** (path/method/signature changed) → see sub-rules below
+   - **Route identity normalization:** For identity comparison, all path parameters normalize to `:param`. `GET /users/:userId` and `GET /users/:id` have the same identity `GET /users/:param` because only the parameter *name* differed, not the structural URL.
+   - **Which case applies?**
+      - **Route identity unchanged, only parameter name/inner variable changed** → Update the existing file in place. Do NOT rename it. Change the URL variable name inside the file (e.g., `{{userId}}` → `{{user_id}}`). Never replace a variable with a hardcoded literal. Update the corresponding environment variable key to match if the variable is needed for the request to function.
+      - **Route identity changed** (structural path different) → Generate a new file via the naming algorithm. Mark the old file as stale — preserve it in place, do NOT delete.
+   - **Stale-file policy:**
+      - Do **not** delete stale `.bru` files unless the user explicitly approves deletion.
+      - Write a short stale-note file explaining why each file is stale.
+   - **Environment preservation policy:**
+      - Do **not** change existing environment files unless a newly required variable is necessary for one of the generated requests to function.
+      - If a new variable must be added, change only what is necessary (add or rename the affected key). Preserve all other keys and values.
+      - When a changed route renames a parameter, update the environment variable key in place to match.
    - **Unchanged routes** → leave untouched
 
 ## Adapter Scope and Behavior
@@ -275,3 +321,4 @@ Available adapter specs:
 - Bruno file format: each `.bru` file is plain text with sections (`meta`, `get`/`post`/etc., `headers`, `body`, `script:pre-request`, `script:post-response`)
 - Bruno environment files: `vars:<env-name>` block with key-value pairs
 - Bruno variable interpolation: `{{variableName}}`
+- Official public schema guidance is documented for OpenCollection YAML. Do not assume a public `bruno.json` schema exists unless Bruno documentation explicitly provides one.
