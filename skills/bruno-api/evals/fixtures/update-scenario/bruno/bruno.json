@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "name": "update-scenario API",
+  "type": "collection",
+  "presets": {
+    "requestType": "http",
+    "requestUrl": "{{base_url}}"
+  }
+}

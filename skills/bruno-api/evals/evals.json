@@ -1,0 +1,113 @@
+{
+  "skill_name": "bruno-api",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I've got a NestJS project at skills/bruno-api/evals/fixtures/basic-crud with a products API. Can you create a Bruno collection for it so I can test the endpoints in different environments?",
+      "expected_output": "A bruno/ directory with collection metadata, environment file(s), and one .bru file per product endpoint (create, list, get-by-id, update, delete), including appropriate response assertions.",
+      "files": ["evals/fixtures/basic-crud"],
+      "expectations": [
+        "Creates bruno/bruno.json with collection metadata and correct project name",
+        "Creates bruno/collection.bru with collection-level settings and a non-empty docs block",
+        "Creates at least one environment file in bruno/environments/ with base_url variable",
+        "Creates bruno/api/products/POST.create-product.bru for POST /api/products (or equivalent kebab-case semantic name)",
+        "Creates a Bruno file for GET /api/products endpoint using kebab-case semantic naming",
+        "Creates a Bruno file for GET /api/products/:id endpoint using kebab-case semantic naming",
+        "Creates a Bruno file for PATCH /api/products/:id endpoint using kebab-case semantic naming",
+        "Creates a Bruno file for DELETE /api/products/:id endpoint using kebab-case semantic naming",
+        "The POST endpoint script assert checks for status 201",
+        "The DELETE endpoint script assert follows explicit source status when present (204 in this fixture)",
+        "Base URL reflects global prefix 'api' (http://localhost:3000/api)",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need Bruno collections for my NestJS project at skills/bruno-api/evals/fixtures/auth-crud. It's a NestJS app with JWT authentication. Generate a complete Bruno collection including auth flow so I can test the protected endpoints.",
+      "expected_output": "A bruno/ directory with collection metadata, environment files, auth module endpoints, users module endpoints, orders module endpoints, a core auth-token request, and inferred smoke flow tests.",
+      "files": ["evals/fixtures/auth-crud"],
+      "expectations": [
+        "Creates bruno/collection.bru with collection-level settings and a non-empty docs block",
+        "Creates bruno/core/POST.auth-token.bru for acquiring JWT token via /auth/login",
+        "The auth-token script uses bru.setVar to store token using inferred token field",
+        "Creates bruno/api/auth/POST.register-user.bru for POST /auth/register (or equivalent kebab-case semantic name)",
+        "Creates bruno/api/auth/POST.login.bru for POST /auth/login (or equivalent kebab-case semantic name)",
+        "Creates bruno/api/auth/GET.current-user.bru for GET /auth/me (or equivalent kebab-case semantic name)",
+        "Creates a Bruno file for GET /users endpoint using kebab-case semantic naming",
+        "Creates a Bruno file for DELETE /users/:id endpoint using kebab-case semantic naming",
+        "Creates bruno/api/orders/POST.create-order.bru for POST /orders (or equivalent kebab-case semantic name)",
+        "Protected endpoints include Authorization header with Bearer {{auth_token}}",
+        "Creates at least one smoke flow in bruno/smoke/ folder",
+        "Detects NestJS framework from package.json",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I updated my NestJS API at skills/bruno-api/evals/fixtures/update-scenario. I added some new endpoints, removed the delete user endpoint, and changed the GET user path from :userId to :id. Can you update the Bruno collection that's already there?",
+      "expected_output": "Existing bruno/ collection is updated: new endpoints are added, the stale DELETE endpoint is flagged but not deleted without confirmation, the GET user endpoint path is updated, and untouched endpoints remain as-is.",
+      "files": ["evals/fixtures/update-scenario"],
+      "expectations": [
+        "Detects that bruno/ already exists and operates in update mode",
+        "Creates bruno/api/auth/POST.logout.bru for the new POST /auth/logout endpoint (or equivalent kebab-case semantic name)",
+        "Creates bruno/api/users/GET.search-users.bru for the new GET /users/search endpoint (or equivalent kebab-case semantic name)",
+        "Creates bruno/api/users/POST.create-user.bru for the new POST /users endpoint (or equivalent kebab-case semantic name)",
+        "Updates the GET users by-id endpoint path from :userId to :id",
+        "Identifies DELETE /users/:userId as stale/removed and asks user before deleting",
+        "Preserves the unchanged GET /users endpoint file",
+        "Does NOT modify the unchanged bruno.json, collection.bru, or environment files unnecessarily",
+        "Uses route identity based on method + normalized path to decide new/changed/stale routes",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Please generate a Bruno collection for my Spring Boot project at skills/bruno-api/evals/fixtures/spring-basic so I can validate local and staging APIs.",
+      "expected_output": "A Bruno collection generated from Spring Boot controller mappings, with environment files and endpoint requests reflecting Spring conventions.",
+      "files": ["evals/fixtures/spring-basic"],
+      "expectations": [
+        "Detects Spring Boot using build.gradle and spring-boot-starter-web",
+        "Creates bruno/collection.bru with collection-level settings and a non-empty docs block",
+        "Creates bruno/api/products/GET.list-products.bru",
+        "Creates bruno/api/products/GET.product-by-id.bru",
+        "Creates bruno/api/products/POST.create-product.bru",
+        "Creates bruno/api/products/DELETE.delete-product.bru",
+        "Creates bruno/environments/local.bru and bruno/environments/staging.bru",
+        "Local base_url reflects Spring defaults and context path (http://localhost:8080/api)",
+        "POST assert uses explicit source status (201 from @ResponseStatus)",
+        "DELETE assert uses explicit source status (204 from @ResponseStatus)",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Generate Bruno requests for my FastAPI service at skills/bruno-api/evals/fixtures/fastapi-basic. I need environment-level smoke validation.",
+      "expected_output": "A Bruno collection generated from FastAPI router declarations and include_router prefix wiring.",
+      "files": ["evals/fixtures/fastapi-basic"],
+      "expectations": [
+        "Detects FastAPI using requirements.txt/pyproject signals",
+        "Creates bruno/collection.bru with collection-level settings and a non-empty docs block",
+        "Creates bruno/api/products/GET.list-products.bru",
+        "Creates bruno/api/products/GET.product-by-id.bru",
+        "Creates bruno/api/products/POST.create-product.bru",
+        "Creates bruno/api/products/DELETE.delete-product.bru",
+        "Creates bruno/smoke/smoke.products-crud-lite.bru",
+        "Generated URLs/base_url reflect the /api router prefix",
+        "POST assert uses explicit source status (201 from status_code)",
+        "DELETE assert uses explicit source status (204 from status_code)",
+        "Performs final Bruno artifact validation using an official bruno.json schema if one is documented, otherwise falls back to lightweight consistency checks"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Set up a Bruno API collection for skills/bruno-api/evals/fixtures/no-match-frontend so we can test APIs.",
+      "expected_output": "The agent reports no supported backend adapter match and stops without creating Bruno files.",
+      "files": ["evals/fixtures/no-match-frontend"],
+      "expectations": [
+        "Reports that no framework adapter matched the project",
+        "Does not create a bruno/ directory",
+        "Stops before route extraction or file generation"
+      ]
+    }
+  ]
+}
