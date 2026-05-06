@@ -35,6 +35,7 @@ CLI 상세 사용법은 [vercel-labs/skills](https://github.com/vercel-labs/skil
 | `repo-readme` | 실용적인 온보딩을 위해 README 구조와 명확성을 개선합니다. 명령 예시는 정확하게 유지하고 추상적인 내용은 제거합니다. |
 | `requirement-gap-check` | 각 요구사항을 구현 근거와 매핑하고, 리뷰 또는 handoff 전에 미충족되거나 모호한 항목을 표면화합니다. |
 | `extract-project-contributions` | 경력 워크플로에서 재작성 전에 저장소나 문서 산출물에서 근거 기반 프로젝트 기여 데이터를 추출합니다. |
+| `bruno-api` | 백엔드 소스 코드를 기준으로 Bruno 컬렉션을 생성하거나 업데이트해 환경 단위 API 검증에 활용합니다. |
 | `git-commit-from-instructions` | 저장소별 커밋 규칙에 따라 커밋 메시지를 생성하고, staged 또는 에이전트가 작성한 변경사항만 커밋합니다. |
 
 ## Related Docs
