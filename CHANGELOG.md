@@ -10,6 +10,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Added
 
 - Added `extract-project-contributions`, the first `career` profile skill for source-grounded developer, planner, and designer project contribution extraction.
+- Added `bruno-api`, a root-cataloged skill that generates or updates Bruno collections from backend source code for environment-level API validation.
+- Added `bruno-api` guidance for `collection.bru`-aware output structure, final validation, and conservative update behavior for existing Bruno files.
 
 ## [0.1.2] - 2026-04-04
 
